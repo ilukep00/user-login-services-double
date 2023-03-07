@@ -14,7 +14,7 @@ final class UserLoginServiceTest extends TestCase
     /**
      * @test
      */
-    public function errorWhileLoginUserIfAlreadyLoggedIn()
+    public function errorWhileManuallyLoginUserIfAlreadyLoggedIn()
     {
         $userLoginService = new UserLoginService();
         $user = new User("username");
@@ -25,5 +25,15 @@ final class UserLoginServiceTest extends TestCase
         $userLoginService->manualLogin($user);
     }
 
+    /**
+     * @test
+     */
+    public function userIsManuallyLoggedIn(){
+        $userLoginService = new UserLoginService();
+        $user = new User("username");
+
+        $userLoginService->manualLogin($user);
+        $this->assertContains($user,$userLoginService->getLoggedUsers());
+    }
 
 }
