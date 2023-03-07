@@ -16,6 +16,10 @@ final class UserLoginServiceTest extends TestCase
     {
         $userLoginService = new UserLoginService();
 
-        $this->assertEquals("user logged", $userLoginService->manualLogin());
+        $this->expectExceptionMessage('User already logged in');
+
+        $userLoginService->manualLogin("lukepastor");
     }
+
+
 }
