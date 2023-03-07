@@ -31,10 +31,26 @@ final class UserLoginServiceTest extends TestCase
      */
     public function userIsManuallyLoggedIn(){
         $userLoginService = new UserLoginService();
-        $user = new User("username");
+        $user = new User("name");
 
         $userLoginService->manualLogin($user);
         $this->assertContains($user,$userLoginService->getLoggedUsers());
     }
 
+    /**
+     * @test
+     */
+    public function returnNumbersOfSessionActive(){
+        $userLoginService = new UserLoginService();
+
+        $numberOfSessions = $userLoginService->getExternalSessions();
+
+        $user1 = new User("name");
+        $user2 = new User("username");
+
+        $userLoginService->manualLogin($user1);
+        $userLoginService->manualLogin($user2);
+
+        $this->assertEquals(2, $numberOfSessions);
+    }
 }

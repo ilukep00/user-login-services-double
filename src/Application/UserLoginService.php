@@ -3,6 +3,7 @@
 namespace UserLoginService\Application;
 use Exception;
 use UserLoginService\Domain\User;
+use UserLoginService\Infrastructure\FacebookSessionManager;
 
 class UserLoginService
 {
@@ -14,6 +15,11 @@ class UserLoginService
             throw new Exception("User already logged in");
         }
         $this->loggedUsers[] = $user;
+    }
+    public function getExternalSessions():int
+    {
+        $facebookSessionManager = new FacebookSessionManager();
+        return $facebookSessionManager->getSessions();
     }
 
     /**
