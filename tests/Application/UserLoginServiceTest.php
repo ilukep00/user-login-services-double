@@ -8,6 +8,8 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use UserLoginService\Application\UserLoginService;
 use UserLoginService\Domain\User;
+use UserLoginService\Double\DummySessionManager;
+use UserLoginService\Double\StubSessionManager;
 
 final class UserLoginServiceTest extends TestCase
 {
@@ -16,7 +18,7 @@ final class UserLoginServiceTest extends TestCase
      */
     public function errorWhileManuallyLoginUserIfAlreadyLoggedIn()
     {
-        $userLoginService = new UserLoginService();
+        $userLoginService = new UserLoginService(new DummySessionManager());
         $user = new User("username");
 
         $this->expectException(Exception::class);
@@ -30,7 +32,7 @@ final class UserLoginServiceTest extends TestCase
      * @test
      */
     public function userIsManuallyLoggedIn(){
-        $userLoginService = new UserLoginService();
+        $userLoginService = new UserLoginService(new DummySessionManager());
         $user = new User("name");
 
         $userLoginService->manualLogin($user);
@@ -41,15 +43,9 @@ final class UserLoginServiceTest extends TestCase
      * @test
      */
     public function returnNumbersOfSessionActive(){
-        $userLoginService = new UserLoginService();
+        $userLoginService = new UserLoginService(new StubSessionManager());
 
         $numberOfSessions = $userLoginService->getExternalSessions();
-
-        $user1 = new User("name");
-        $user2 = new User("username");
-
-        $userLoginService->manualLogin($user1);
-        $userLoginService->manualLogin($user2);
 
         $this->assertEquals(2, $numberOfSessions);
     }
