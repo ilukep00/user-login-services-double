@@ -25,12 +25,16 @@ class UserLoginService
     {
         return $this->sessionManager->getSessions();
     }
-
     /**
      * @return array
      */
     public function getLoggedUsers(): array
     {
         return $this->loggedUsers;
+    }
+
+    public function login()
+    {
+        return "";
     }
 }

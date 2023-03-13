@@ -8,6 +8,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use UserLoginService\Application\UserLoginService;
 use UserLoginService\Domain\User;
+use UserLoginService\Infrastructure\FacebookSessionManager;
 use UserLoginService\Tests\Doubles\DummySessionManager;
 use UserLoginService\Tests\Doubles\StubSessionManager;
 
@@ -48,5 +49,15 @@ final class UserLoginServiceTest extends TestCase
         $numberOfSessions = $userLoginService->getExternalSessions();
 
         $this->assertEquals(2, $numberOfSessions);
+    }
+    /**
+     * @test
+     */
+    public function returnUserIsLoggedInFaceebook(){
+        $userLoginService = new UserLoginService(new StubSessionManager());
+
+        $loginMessage =  $userLoginService->login();
+
+        $this->assertEquals("login correcto", $loginMessage);
     }
 }
