@@ -8,8 +8,8 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use UserLoginService\Application\UserLoginService;
 use UserLoginService\Domain\User;
-use UserLoginService\Double\DummySessionManager;
-use UserLoginService\Double\StubSessionManager;
+use UserLoginService\Tests\Doubles\DummySessionManager;
+use UserLoginService\Tests\Doubles\StubSessionManager;
 
 final class UserLoginServiceTest extends TestCase
 {
