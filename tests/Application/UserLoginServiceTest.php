@@ -59,7 +59,7 @@ final class UserLoginServiceTest extends TestCase
 
         $loginStatus =  $userLoginService->login("wrong_username","wrong_password");
 
-        $this->assertEquals("Login incorrecto", $loginStatus);
+        $this->assertEquals($userLoginService::LOGIN_INCORRECT, $loginStatus);
     }
 
     /**
@@ -70,7 +70,7 @@ final class UserLoginServiceTest extends TestCase
         $expectedUser = new User("username");
         $loginStatus =  $userLoginService->login("username","password");
 
-        $this->assertEquals("Login correcto", $loginStatus);
+        $this->assertEquals($userLoginService::LOGIN_CORRECT, $loginStatus);
         $this->assertEquals($expectedUser, $userLoginService->getLoggedUsers()[0]);
     }
 }

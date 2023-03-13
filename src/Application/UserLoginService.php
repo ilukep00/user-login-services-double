@@ -7,6 +7,8 @@ use UserLoginService\Infrastructure\StubFacebookSessionManager;
 
 class UserLoginService
 {
+    const LOGIN_CORRECT =  "Login correcto";
+    const LOGIN_INCORRECT =  "Login incorrecto";
     private array $loggedUsers = [];
     private SessionManager $sessionManager;
 
@@ -38,10 +40,8 @@ class UserLoginService
         $isLogged = $this-> sessionManager->login($userName, $password);
         if($isLogged){
             $this->loggedUsers[] = new User($userName);
-            return "Login correcto";
+            return self::LOGIN_CORRECT;
         }
-        else{
-            return "Login incorrecto";
-        }
+        return self::LOGIN_INCORRECT;
     }
 }
