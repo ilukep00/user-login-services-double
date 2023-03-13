@@ -33,8 +33,15 @@ class UserLoginService
         return $this->loggedUsers;
     }
 
-    public function login()
+    public function login(string $userName, string $password):string
     {
-        return "";
+        $isLogged = $this-> sessionManager->login($userName, $password);
+        if($isLogged){
+            $this->loggedUsers[] = new User($userName);
+            return "Login correcto";
+        }
+        else{
+            return "Login incorrecto";
+        }
     }
 }

@@ -11,6 +11,7 @@ use UserLoginService\Domain\User;
 use UserLoginService\Infrastructure\FacebookSessionManager;
 use UserLoginService\Tests\Doubles\DummySessionManager;
 use UserLoginService\Tests\Doubles\StubSessionManager;
+use UserLoginService\Tests\Doubles\FakeSessionManager;
 
 final class UserLoginServiceTest extends TestCase
 {
@@ -53,11 +54,23 @@ final class UserLoginServiceTest extends TestCase
     /**
      * @test
      */
-    public function returnUserIsLoggedInFaceebook(){
-        $userLoginService = new UserLoginService(new StubSessionManager());
+    public function returnMessageUserIsNotLoggedInFaceebook(){
+        $userLoginService = new UserLoginService(new FakeSessionManager());
 
-        $loginMessage =  $userLoginService->login();
+        $loginStatus =  $userLoginService->login("wrong_username","wrong_password");
 
-        $this->assertEquals("login correcto", $loginMessage);
+        $this->assertEquals("Login incorrecto", $loginStatus);
+    }
+
+    /**
+     * @test
+     */
+    public function returnMessageUserIsLoggedInFaceebook(){
+        $userLoginService = new UserLoginService(new FakeSessionManager());
+        $expectedUser = new User("username");
+        $loginStatus =  $userLoginService->login("username","password");
+
+        $this->assertEquals("Login correcto", $loginStatus);
+        $this->assertEquals($expectedUser, $userLoginService->getLoggedUsers()[0]);
     }
 }
