@@ -9,8 +9,8 @@ class UserLoginService
 {
     const LOGIN_CORRECT =  "Login correcto";
     const LOGIN_INCORRECT =  "Login incorrecto";
-
     const LOGOUT_INCORRECT =  "User not found";
+    const LOGOUT_CORRECT = "Ok";
     private array $loggedUsers = [];
     private SessionManager $sessionManager;
 
