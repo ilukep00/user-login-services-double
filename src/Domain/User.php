@@ -11,4 +11,12 @@ class User
         $this->userName = $userName;
     }
 
+    /**
+     * @return string
+     */
+    public function getUserName(): string
+    {
+        return $this->userName;
+    }
+
 }

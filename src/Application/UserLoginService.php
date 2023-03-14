@@ -47,7 +47,12 @@ class UserLoginService
         return self::LOGIN_INCORRECT;
     }
 
-    public function logout(string $userName):string{
+    public function logout(User $user):string{
+        if(($clave = array_search($user,$this->loggedUsers))!== false) {
+            unset($this->loggedUsers[$clave]);
+            $this->sessionManager->logout($user->getUserName());
+            return self::LOGOUT_CORRECT;
+        }
         return self::LOGOUT_INCORRECT;
     }
 

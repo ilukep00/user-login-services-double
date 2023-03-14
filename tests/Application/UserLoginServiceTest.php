@@ -77,7 +77,8 @@ final class UserLoginServiceTest extends MockeryTestCase
      */
     public function returnMessageUserIsLoggedInFaceebook(){
         $expectedUser = new User("username");
-        $this->sessionManager->allows()->login("username","password")->andReturns(true);
+
+        $this->sessionManager->allows()->login("username","password")->andReturn(true);
 
         $loginStatus =  $this->userLoginService->login("username","password");
 
@@ -89,7 +90,9 @@ final class UserLoginServiceTest extends MockeryTestCase
      * @test
      */
     public function ReturnUserNotFound(){
-        $loginStatus =  $this->userLoginService->logout("wrong_username");
+        $user = new User("wrong_username");
+
+        $loginStatus =  $this->userLoginService->logout($user);
 
         $this->assertEquals($this->userLoginService::LOGOUT_INCORRECT, $loginStatus);
     }
@@ -97,11 +100,14 @@ final class UserLoginServiceTest extends MockeryTestCase
      * @test
      */
     public function  ReturnMessageUserLogOutAndUserNotInArray(){
+        $sessionManager = Mockery::spy(SessionManager::class);
+        $userLoginService = new UserLoginService($sessionManager);
+
         $user = new User("username");
+        $userLoginService->manualLogin($user);
+        $loginStatus =  $userLoginService->logout($user);
 
-        $this -> userLoginService->manualLogin($user);
-        $loginStatus =  $this->userLoginService->logout("username");
-
+        $sessionManager->shouldHaveReceived()->logout($user->getUserName());
 
         $this->assertEquals($this->userLoginService::LOGOUT_CORRECT, $loginStatus);
         $this->assertFalse(in_array($user,$this->userLoginService->getLoggedUsers()));
