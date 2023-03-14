@@ -9,6 +9,8 @@ class UserLoginService
 {
     const LOGIN_CORRECT =  "Login correcto";
     const LOGIN_INCORRECT =  "Login incorrecto";
+
+    const LOGOUT_INCORRECT =  "User not found";
     private array $loggedUsers = [];
     private SessionManager $sessionManager;
 
@@ -44,4 +46,9 @@ class UserLoginService
         }
         return self::LOGIN_INCORRECT;
     }
+
+    public function logout(string $userName):string{
+        return "";
+    }
+
 }

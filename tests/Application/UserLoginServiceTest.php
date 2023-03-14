@@ -84,4 +84,14 @@ final class UserLoginServiceTest extends MockeryTestCase
         $this->assertEquals($this->userLoginService::LOGIN_CORRECT, $loginStatus);
         $this->assertEquals($expectedUser, $this->userLoginService->getLoggedUsers()[0]);
     }
+
+    /**
+     * @test
+     */
+    public function ReturnUserNotFound(){
+
+        $loginStatus =  $this->userLoginService->logout("wrong_username","wrong_password");
+        $this->assertEquals($this->userLoginService::LOGOUT_INCORRECT, $loginStatus);
+
+    }
 }
