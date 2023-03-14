@@ -6,48 +6,57 @@ namespace UserLoginService\Tests\Application;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use UserLoginService\Application\SessionManager;
 use UserLoginService\Application\UserLoginService;
 use UserLoginService\Domain\User;
-use UserLoginService\Infrastructure\FacebookSessionManager;
-use UserLoginService\Tests\Doubles\DummySessionManager;
-use UserLoginService\Tests\Doubles\StubSessionManager;
-use UserLoginService\Tests\Doubles\FakeSessionManager;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery;
 
-final class UserLoginServiceTest extends TestCase
+
+final class UserLoginServiceTest extends MockeryTestCase
 {
+    private SessionManager $sessionManager;
+    private UserLoginService $userLoginService;
+    protected function setUp():void
+    {
+        parent::setUp();
+        $this -> sessionManager = Mockery::mock(SessionManager::class);
+        $this -> userLoginService = new UserLoginService($this -> sessionManager);
+    }
+
     /**
      * @test
      */
     public function errorWhileManuallyLoginUserIfAlreadyLoggedIn()
     {
-        $userLoginService = new UserLoginService(new DummySessionManager());
         $user = new User("username");
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("User already logged in");
 
-        $userLoginService->manualLogin($user);
-        $userLoginService->manualLogin($user);
+        $this -> userLoginService->manualLogin($user);
+        $this -> userLoginService->manualLogin($user);
     }
 
     /**
      * @test
      */
     public function userIsManuallyLoggedIn(){
-        $userLoginService = new UserLoginService(new DummySessionManager());
         $user = new User("name");
 
-        $userLoginService->manualLogin($user);
-        $this->assertContains($user,$userLoginService->getLoggedUsers());
+        $this -> userLoginService->manualLogin($user);
+
+        $this->assertContains($user,$this -> userLoginService->getLoggedUsers());
     }
 
     /**
      * @test
      */
     public function returnNumbersOfSessionActive(){
-        $userLoginService = new UserLoginService(new StubSessionManager());
 
-        $numberOfSessions = $userLoginService->getExternalSessions();
+        $this -> sessionManager->allows()->getSessions()->andReturns(2);
+
+        $numberOfSessions = $this -> userLoginService->getExternalSessions();
 
         $this->assertEquals(2, $numberOfSessions);
     }
@@ -55,22 +64,24 @@ final class UserLoginServiceTest extends TestCase
      * @test
      */
     public function returnMessageUserIsNotLoggedInFaceebook(){
-        $userLoginService = new UserLoginService(new FakeSessionManager());
 
-        $loginStatus =  $userLoginService->login("wrong_username","wrong_password");
+        $this -> sessionManager->allows()->login("wrong_username","wrong_password")->andReturns(false);
 
-        $this->assertEquals($userLoginService::LOGIN_INCORRECT, $loginStatus);
+        $loginStatus =  $this-> userLoginService->login("wrong_username","wrong_password");
+
+        $this->assertEquals($this -> userLoginService::LOGIN_INCORRECT, $loginStatus);
     }
 
     /**
      * @test
      */
     public function returnMessageUserIsLoggedInFaceebook(){
-        $userLoginService = new UserLoginService(new FakeSessionManager());
         $expectedUser = new User("username");
-        $loginStatus =  $userLoginService->login("username","password");
+        $this->sessionManager->allows()->login("username","password")->andReturns(true);
 
-        $this->assertEquals($userLoginService::LOGIN_CORRECT, $loginStatus);
-        $this->assertEquals($expectedUser, $userLoginService->getLoggedUsers()[0]);
+        $loginStatus =  $this->userLoginService->login("username","password");
+
+        $this->assertEquals($this->userLoginService::LOGIN_CORRECT, $loginStatus);
+        $this->assertEquals($expectedUser, $this->userLoginService->getLoggedUsers()[0]);
     }
 }
