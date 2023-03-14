@@ -48,7 +48,7 @@ class UserLoginService
     }
 
     public function logout(string $userName):string{
-        return "";
+        return self::LOGOUT_INCORRECT;
     }
 
 }
