@@ -49,8 +49,14 @@ class UserLoginService
 
     public function logout(User $user):string{
         if(($clave = array_search($user,$this->loggedUsers))!== false) {
+            try{
+                $this->sessionManager->logout($user->getUserName());
+            }catch (Exception $exception) {
+                if ($exception->getMessage() === "ServiceNotAvailable") {
+                    return "ServiceNotAvailable";
+                }
+            }
             unset($this->loggedUsers[$clave]);
-            $this->sessionManager->logout($user->getUserName());
             return self::LOGOUT_CORRECT;
         }
         return self::LOGOUT_INCORRECT;

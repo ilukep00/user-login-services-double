@@ -116,12 +116,12 @@ final class UserLoginServiceTest extends MockeryTestCase
      * @test
      */
     public function returnMessageServiceNotAvailableIfThisExceptionIsThrown(){
-        $sessionManager = $this->getMockBuilder(SessionManager::class)->getMock();
+        $sessionManager = $this->createMock(SessionManager::class);
         $sessionManager -> expects($this->once())
             ->method("logout")
-            ->willReturn(throw new Exception("ServiceNotAvailable"));
-        $userLoginService = new UserLoginService($sessionManager);
+            ->willThrowException(new Exception('ServiceNotAvailable'));
 
+        $userLoginService = new UserLoginService($sessionManager);
         $user = new User("username");
         $userLoginService->manualLogin($user);
         $logoutStatus =  $userLoginService->logout($user);
