@@ -56,6 +56,9 @@ class UserLoginService
                 if ($exception->getMessage() === "ServiceNotAvailable") {
                     return self::LOGOUT_ServiceNotAvailable;
                 }
+                if ($exception->getMessage() === "UserNotLoggedIn") {
+                    return "UserNotLoggedIn";
+                }
             }
             unset($this->loggedUsers[$clave]);
             return self::LOGOUT_CORRECT;
