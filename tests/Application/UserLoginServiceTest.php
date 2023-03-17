@@ -92,9 +92,9 @@ final class UserLoginServiceTest extends MockeryTestCase
     public function ReturnUserNotFound(){
         $user = new User("wrong_username");
 
-        $loginStatus =  $this->userLoginService->logout($user);
+        $logoutStatus =  $this->userLoginService->logout($user);
 
-        $this->assertEquals($this->userLoginService::LOGOUT_INCORRECT, $loginStatus);
+        $this->assertEquals($this->userLoginService::LOGOUT_INCORRECT, $logoutStatus);
     }
     /**
      * @test
@@ -105,12 +105,27 @@ final class UserLoginServiceTest extends MockeryTestCase
 
         $user = new User("username");
         $userLoginService->manualLogin($user);
-        $loginStatus =  $userLoginService->logout($user);
+        $logoutStatus =  $userLoginService->logout($user);
 
         $sessionManager->shouldHaveReceived()->logout($user->getUserName());
 
-        $this->assertEquals($this->userLoginService::LOGOUT_CORRECT, $loginStatus);
+        $this->assertEquals($this->userLoginService::LOGOUT_CORRECT, $logoutStatus);
         $this->assertFalse(in_array($user,$this->userLoginService->getLoggedUsers()));
     }
+    /**
+     * @test
+     */
+    public function returnMessageServiceNotAvailableIfThisExceptionIsThrown(){
+        $sessionManager = $this->getMockBuilder(SessionManager::class)->getMock();
+        $sessionManager -> expects($this->once())
+            ->method("logout")
+            ->willReturn(throw new Exception("ServiceNotAvailable"));
+        $userLoginService = new UserLoginService($sessionManager);
 
+        $user = new User("username");
+        $userLoginService->manualLogin($user);
+        $logoutStatus =  $userLoginService->logout($user);
+
+        $this->assertEquals("ServiceNotAvailable", $logoutStatus);
+    }
 }
