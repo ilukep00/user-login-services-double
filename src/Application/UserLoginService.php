@@ -11,6 +11,7 @@ class UserLoginService
     const LOGIN_INCORRECT =  "Login incorrecto";
     const LOGOUT_INCORRECT =  "User not found";
     const LOGOUT_CORRECT = "Ok";
+    const LOGOUT_ServiceNotAvailable = "ServiceNotAvailable";
     private array $loggedUsers = [];
     private SessionManager $sessionManager;
 
@@ -53,7 +54,7 @@ class UserLoginService
                 $this->sessionManager->logout($user->getUserName());
             }catch (Exception $exception) {
                 if ($exception->getMessage() === "ServiceNotAvailable") {
-                    return "ServiceNotAvailable";
+                    return self::LOGOUT_ServiceNotAvailable;
                 }
             }
             unset($this->loggedUsers[$clave]);

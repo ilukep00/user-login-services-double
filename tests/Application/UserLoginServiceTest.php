@@ -126,6 +126,6 @@ final class UserLoginServiceTest extends MockeryTestCase
         $userLoginService->manualLogin($user);
         $logoutStatus =  $userLoginService->logout($user);
 
-        $this->assertEquals("ServiceNotAvailable", $logoutStatus);
+        $this->assertEquals($userLoginService::LOGOUT_ServiceNotAvailable, $logoutStatus);
     }
 }
