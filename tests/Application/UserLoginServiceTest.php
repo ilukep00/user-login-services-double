@@ -128,4 +128,21 @@ final class UserLoginServiceTest extends MockeryTestCase
 
         $this->assertEquals($userLoginService::LOGOUT_ServiceNotAvailable, $logoutStatus);
     }
+
+    /**
+     * @test
+     */
+    public function returnMessageUserNotLoggedInIfThisExceptionIsThrown(){
+        $sessionManager = $this->createMock(SessionManager::class);
+        $sessionManager -> expects($this->once())
+            ->method("logout")
+            ->willThrowException(new Exception('UserNotLoggedIn'));
+
+        $userLoginService = new UserLoginService($sessionManager);
+        $user = new User("username");
+        $userLoginService->manualLogin($user);
+        $logoutStatus =  $userLoginService->logout($user);
+
+        $this->assertEquals('UserNotLoggedIn', $logoutStatus);
+    }
 }
